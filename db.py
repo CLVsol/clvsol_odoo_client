@@ -19,6 +19,7 @@
 ###############################################################################
 
 import erppeek  # http://erppeek.readthedocs.io/en/1.6.2/api.html#manage-addons
+import xmlrpc.client as xmlrpclib
 
 
 class DB(object):
@@ -49,6 +50,11 @@ class DB(object):
         self.tz = tz
 
     def create(self):
+
+        sock_common = xmlrpclib.ServerProxy('http://localhost:8069/xmlrpc/2/common')
+        print('sock_common.version(): "{0}"'.format(sock_common.version()))
+        uid = sock_common.login(self.dbname, 'admin', self.admin_user_pw)
+        print('uid: "{0}"'.format(uid))
 
         client = erppeek.Client(server=self.server)
         print('Databases found: {0}'.format(client.db.list()))
@@ -88,29 +94,36 @@ class DB(object):
         args = [('name', '=', 'My Company'), ]
         partner_id = ResPartner.browse(args).id
 
-        values = {
-            'name': CompanyName,
-            'email': '',
-            'website': website,
-            'tz': self.tz,
-            'lang': self.lang,
-            'image': Company_image,
-        }
-        ResPartner.write(partner_id, values)
+        if partner_id != []:
 
-        ResCompany = client.model('res.company')
-        args = [('name', '=', 'My Company'), ]
-        company_id = ResCompany.browse(args).id
+            values = {
+                'name': CompanyName,
+                'email': '',
+                'website': website,
+                'tz': self.tz,
+                'lang': self.lang,
+                'image': Company_image,
+            }
+            ResPartner.write(partner_id, values)
 
-        values = {
-            'name': CompanyName,
-            'email': '',
-            'website': website,
-            'logo': Company_image,
-        }
-        ResCompany.write(company_id, values)
+            ResCompany = client.model('res.company')
+            args = [('name', '=', 'My Company'), ]
+            company_id = ResCompany.browse(args).id
 
-        print('Done.')
+            values = {
+                'name': CompanyName,
+                'email': '',
+                'website': website,
+                'logo': Company_image,
+            }
+            ResCompany.write(company_id, values)
+
+            print('Done.')
+
+        else:
+
+            print('"{0}" already configured.'.format(self.dbname))
+            print('Done.')
 
     def administrator_setup(self, admin_user_email, Administrator_image):
 
@@ -124,22 +137,29 @@ class DB(object):
 
         ResUsers = client.model('res.users')
         args = [('name', '=', 'Administrator'), ]
-        user_id = ResUsers.browse(args).id
+        user = ResUsers.browse(args)
 
-        values = {
-            'lang': self.lang,
-            'tz': self.tz,
-            'email': admin_user_email,
-            'image': Administrator_image,
-        }
-        ResUsers.write(user_id, values)
+        if user[0].email != admin_user_email:
 
-        group_name_list = [
-            'Contact Creation',
-        ]
-        self.user_groups_setup('Administrator', group_name_list)
+            values = {
+                'lang': self.lang,
+                'tz': self.tz,
+                'email': admin_user_email,
+                'image': Administrator_image,
+            }
+            ResUsers.write(user.id, values)
 
-        print('Done.')
+            group_name_list = [
+                'Contact Creation',
+            ]
+            self.user_groups_setup('Administrator', group_name_list)
+
+            print('Done.')
+
+        else:
+
+            print('User "{0}" already configured.'.format(user.name))
+            print('Done.')
 
     def demo_user_setup(self, demo_user_name, demo_user_email, CompanyName, demo_user, demo_user_pw, Demo_User_image):
 
@@ -151,41 +171,50 @@ class DB(object):
             user='admin',
             password=self.admin_user_pw)
 
-        ResPartner = client.model('res.partner')
-        args = [('name', '=', CompanyName), ]
-        parent_id = ResPartner.browse(args).id
-
-        ResCompany = client.model('res.company')
-        args = [('name', '=', CompanyName), ]
-        company_id = ResCompany.browse(args).id
-
-        values = {
-            'name': demo_user_name,
-            'customer': False,
-            'employee': False,
-            'is_company': False,
-            'email': demo_user_email,
-            'website': '',
-            'parent_id': parent_id[0],
-            'company_id': company_id[0],
-            'tz': self.tz,
-            'lang': self.lang
-        }
-        partner_id = ResPartner.create(values)
-
         ResUsers = client.model('res.users')
+        args = [('name', '=', demo_user_name), ]
+        user = ResUsers.browse(args)
 
-        values = {
-            'name': demo_user_name,
-            'partner_id': partner_id,
-            'company_id': company_id[0],
-            'login': demo_user,
-            'password': demo_user_pw,
-            'image': Demo_User_image,
-        }
-        ResUsers.create(values)
+        if user.id == []:
 
-        print('Done.')
+            ResPartner = client.model('res.partner')
+            args = [('name', '=', CompanyName), ]
+            parent_id = ResPartner.browse(args).id
+
+            ResCompany = client.model('res.company')
+            args = [('name', '=', CompanyName), ]
+            company_id = ResCompany.browse(args).id
+
+            values = {
+                'name': demo_user_name,
+                'customer': False,
+                'employee': False,
+                'is_company': False,
+                'email': demo_user_email,
+                'website': '',
+                'parent_id': parent_id[0],
+                'company_id': company_id[0],
+                'tz': self.tz,
+                'lang': self.lang
+            }
+            partner_id = ResPartner.create(values)
+
+            values = {
+                'name': demo_user_name,
+                'partner_id': partner_id,
+                'company_id': company_id[0],
+                'login': demo_user,
+                'password': demo_user_pw,
+                'image': Demo_User_image,
+            }
+            ResUsers.create(values)
+
+            print('Done.')
+
+        else:
+
+            print('User "{0}" already configured.'.format(demo_user_name))
+            print('Done.')
 
     def data_administrator_user_setup(
         self, data_admin_user_name, data_admin_user_email, CompanyName,
@@ -200,41 +229,50 @@ class DB(object):
             user='admin',
             password=self.admin_user_pw)
 
-        ResPartner = client.model('res.partner')
-        args = [('name', '=', CompanyName), ]
-        parent_id = ResPartner.browse(args).id
-
-        ResCompany = client.model('res.company')
-        args = [('name', '=', CompanyName), ]
-        company_id = ResCompany.browse(args).id
-
-        values = {
-            'name': data_admin_user_name,
-            'customer': False,
-            'employee': False,
-            'is_company': False,
-            'email': data_admin_user_email,
-            'website': '',
-            'parent_id': parent_id[0],
-            'company_id': company_id[0],
-            'tz': self.tz,
-            'lang': self.lang
-        }
-        partner_id = ResPartner.create(values)
-
         ResUsers = client.model('res.users')
+        args = [('name', '=', data_admin_user_name), ]
+        user = ResUsers.browse(args)
 
-        values = {
-            'name': data_admin_user_name,
-            'partner_id': partner_id,
-            'company_id': company_id[0],
-            'login': data_admin_user,
-            'password': data_admin_user_pw,
-            'image': DataAdministrator_image,
-        }
-        ResUsers.create(values)
+        if user.id == []:
 
-        print('Done.')
+            ResPartner = client.model('res.partner')
+            args = [('name', '=', CompanyName), ]
+            parent_id = ResPartner.browse(args).id
+
+            ResCompany = client.model('res.company')
+            args = [('name', '=', CompanyName), ]
+            company_id = ResCompany.browse(args).id
+
+            values = {
+                'name': data_admin_user_name,
+                'customer': False,
+                'employee': False,
+                'is_company': False,
+                'email': data_admin_user_email,
+                'website': '',
+                'parent_id': parent_id[0],
+                'company_id': company_id[0],
+                'tz': self.tz,
+                'lang': self.lang
+            }
+            partner_id = ResPartner.create(values)
+
+            values = {
+                'name': data_admin_user_name,
+                'partner_id': partner_id,
+                'company_id': company_id[0],
+                'login': data_admin_user,
+                'password': data_admin_user_pw,
+                'image': DataAdministrator_image,
+            }
+            ResUsers.create(values)
+
+            print('Done.')
+
+        else:
+
+            print('User "{0}" already configured.'.format(data_admin_user_name))
+            print('Done.')
 
     def user_groups_setup(self, user_name, group_name_list):
 
