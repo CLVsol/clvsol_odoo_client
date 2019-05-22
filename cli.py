@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright (C) 2013-Today  Carlos Eduardo Vercelino - CLVsol
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
@@ -166,3 +165,98 @@ class CLI(object):
             self.db_password = args.db_password
         elif self.db_password == '*':
             self.db_password = getpass.getpass('db_password: ')
+
+
+class CLI2(object):
+
+    def __init__(
+        self,
+        local_server='http://localhost:8069',
+        local_admin_user_pw='local_admin_user_pw',
+        local_user='local_user',
+        local_user_pw='local_user_pw',
+        local_dbname='local_dbname',
+        remote_server='http://remotehost:8069',
+        remote_admin_user_pw='remote_admin_user_pw',
+        remote_user='remote_use_rname',
+        remote_user_pw='remote_user_pw',
+        remote_dbname='remote_dbname',
+    ):
+
+        self.local_server = local_server  # self.local_server = '*'
+        self.local_admin_user_pw = local_admin_user_pw  # self.local_admin_user_pw = '*'
+        self.local_user = local_user  # self.local_user = '*'
+        self.local_user_pw = local_user_pw  # self.local_user_pw = '*'
+        self.local_dbname = local_dbname  # self.local_dbname = '*'
+        self.remote_server = remote_server  # self.remote_server = '*'
+        self.remote_admin_user_pw = remote_admin_user_pw  # self.remote_admin_user_pw = '*'
+        self.remote_user = remote_user  # self.remote_user = '*'
+        self.remote_user_pw = remote_user_pw  # self.remote_user_pw = '*'
+        self.remote_dbname = remote_dbname  # self.remote_dbname = '*'
+
+    def argparse(self):
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--lserver', action="store", dest="local_server")
+        parser.add_argument('--ladmin_pw', action="store", dest="local_admin_user_pw")
+        parser.add_argument('--luser', action="store", dest="local_user")
+        parser.add_argument('--lpw', action="store", dest="local_user_pw")
+        parser.add_argument('--ldb', action="store", dest="local_dbname")
+        parser.add_argument('--rserver', action="store", dest="remote_server")
+        parser.add_argument('--radmin_pw', action="store", dest="remote_admin_user_pw")
+        parser.add_argument('--ruser', action="store", dest="remote_user")
+        parser.add_argument('--rpw', action="store", dest="remote_user_pw")
+        parser.add_argument('--rdb', action="store", dest="remote_dbname")
+
+        args = parser.parse_args()
+        # print('%s%s' % ('--> ', args))
+
+        if args.local_server is not None:
+            self.local_server = args.local_server
+        elif self.local_server == '*':
+            self.local_server = input('local_server: ')
+
+        if args.local_admin_user_pw is not None:
+            self.local_admin_user_pw = args.local_admin_user_pw
+        elif self.local_admin_user_pw == '*':
+            self.local_admin_user_pw = getpass.getpass('local_admin_user_pw: ')
+
+        if args.local_user is not None:
+            self.local_user = args.local_user
+        elif self.local_user == '*':
+            self.local_user = getpass.getpass('local_user: ')
+
+        if args.local_user_pw is not None:
+            self.local_user_pw = args.local_user_pw
+        elif self.local_user_pw == '*':
+            self.local_user_pw = getpass.getpass('local_user_pw: ')
+
+        if args.local_dbname is not None:
+            self.local_dbname = args.local_dbname
+        elif self.local_dbname == '*':
+            self.local_dbname = input('local_dbname: ')
+
+        if args.remote_server is not None:
+            self.remote_server = args.remote_server
+        elif self.remote_server == '*':
+            self.remote_server = input('remote_server: ')
+
+        if args.remote_admin_user_pw is not None:
+            self.remote_admin_user_pw = args.remote_admin_user_pw
+        elif self.remote_admin_user_pw == '*':
+            self.remote_admin_user_pw = getpass.getpass('remote_admin_user_pw: ')
+
+        if args.remote_user is not None:
+            self.remote_user = args.remote_user
+        elif self.remote_user == '*':
+            self.remote_user = getpass.getpass('remote_user: ')
+
+        if args.remote_user_pw is not None:
+            self.remote_user_pw = args.remote_user_pw
+        elif self.remote_user_pw == '*':
+            self.remote_user_pw = getpass.getpass('remote_user_pw: ')
+
+        if args.remote_dbname is not None:
+            self.remote_dbname = args.remote_dbname
+        elif self.remote_dbname == '*':
+            self.remote_dbname = input('remote_dbname: ')
