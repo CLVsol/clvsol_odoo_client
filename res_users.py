@@ -19,7 +19,6 @@ def res_user_migrate(
     remote_objects = rsock.execute(remote_dbname, ruid, remote_admin_user_pw,
                                    'res.users', 'search_read',
                                    [],
-
                                    remote_object_fields)
 
     _logger.info(u'%s %s\n', '--> remote_objects', len(remote_objects))
