@@ -82,8 +82,12 @@ def host_login(host, dbname, user, user_pw):
         pass
 
     user_fields = ['name', 'parent_id', ]
-    user_data = sock.execute(dbname, uid, user_pw, 'res.users', 'read',
-                             uid, user_fields)[0]
+    try:
+        user_data = sock.execute(dbname, uid, user_pw, 'res.users', 'read',
+                                 uid, user_fields)[0]
+    except KeyError:
+        user_data = sock.execute(dbname, uid, user_pw, 'res.users', 'read',
+                                 uid, user_fields)
     user_name = user_data['name']
     parent_id = user_data['parent_id']
 
@@ -106,8 +110,12 @@ def host_login(host, dbname, user, user_pw):
     if uid is not False:
 
         user_fields = ['name', 'parent_id', ]
-        user_data = sock.execute(dbname, uid, user_pw, 'res.users', 'read',
-                                 uid, user_fields)[0]
+        try:
+            user_data = sock.execute(dbname, uid, user_pw, 'res.users', 'read',
+                                     uid, user_fields)[0]
+        except KeyError:
+            user_data = sock.execute(dbname, uid, user_pw, 'res.users', 'read',
+                                     uid, user_fields)
         user_name = user_data['name']
         parent_id = False
         if user_data['parent_id'] is not False:
