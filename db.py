@@ -35,10 +35,9 @@ class DB(object):
 
     def create(self):
 
-        sock_common = xmlrpclib.ServerProxy('http://localhost:8069/xmlrpc/2/common')
+        url = 'http://localhost:8069'
+        sock_common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
         print('sock_common.version(): "{0}"'.format(sock_common.version()))
-        uid = sock_common.login(self.dbname, 'admin', self.admin_user_pw)
-        print('uid: "{0}"'.format(uid))
 
         client = erppeek.Client(server=self.server)
         print('Databases found: {0}'.format(client.db.list()))
