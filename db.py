@@ -85,7 +85,7 @@ class DB(object):
                 'website': website,
                 'tz': self.tz,
                 'lang': self.lang,
-                'image': Company_image,
+                'image_1920': Company_image,
             }
             ResPartner.write(partner_id, values)
 
@@ -128,7 +128,7 @@ class DB(object):
                 'lang': self.lang,
                 'tz': self.tz,
                 'email': admin_user_email,
-                'image': Administrator_image,
+                'image_1920': Administrator_image,
             }
             ResUsers.write(user.id, values)
 
@@ -170,7 +170,7 @@ class DB(object):
 
             values = {
                 'name': demo_user_name,
-                'customer': False,
+                # 'customer': False,
                 'employee': False,
                 'is_company': False,
                 'email': demo_user_email,
@@ -188,7 +188,7 @@ class DB(object):
                 'company_id': company_id[0],
                 'login': demo_user,
                 'password': demo_user_pw,
-                'image': Demo_User_image,
+                'image_1920': Demo_User_image,
             }
             ResUsers.create(values)
 
@@ -228,7 +228,7 @@ class DB(object):
 
             values = {
                 'name': data_admin_user_name,
-                'customer': False,
+                # 'customer': False,
                 'employee': False,
                 'is_company': False,
                 'email': data_admin_user_email,
@@ -246,7 +246,7 @@ class DB(object):
                 'company_id': company_id[0],
                 'login': data_admin_user,
                 'password': data_admin_user_pw,
-                'image': DataAdministrator_image,
+                'image_1920': DataAdministrator_image,
             }
             ResUsers.create(values)
 
@@ -276,10 +276,11 @@ class DB(object):
         for group_name in group_name_list:
             args = [('name', '=', group_name)]
             group_id = ResGroups.browse(args).id
-            values = {
-                'groups_id': [(4, group_id[0])],
-            }
-            ResUsers.write(user_id, values)
+            if group_id != []:
+                values = {
+                    'groups_id': [(4, group_id[0])],
+                }
+                ResUsers.write(user_id, values)
 
         print('Done.')
 
