@@ -24,7 +24,7 @@ def res_user_migrate(
     _logger.info(u'%s %s\n', '--> remote_objects', len(remote_objects))
 
     local_object_fields = ['id', 'name', 'partner_id', 'company_id',
-                           'login', 'password', 'image', 'groups_id', 'active']
+                           'login', 'password', 'image_1920', 'groups_id', 'active']
 
     local_objects = lsock.execute(local_dbname, luid, local_admin_user_pw,
                                   'res.users', 'search_read',
@@ -61,7 +61,7 @@ def res_user_migrate(
             res_user_record['login'] = remote_object['login']
             res_user_record['password'] = remote_object['password']
             if remote_object['image'] is not False:
-                res_user_record['image'] = remote_object['image']
+                res_user_record['image_1920'] = remote_object['image']
             res_user_record['lang'] = remote_object['lang']
             res_user_record['tz'] = remote_object['tz']
             res_user_record['active'] = remote_object['active']
