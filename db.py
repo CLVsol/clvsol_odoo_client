@@ -236,63 +236,63 @@ class DB(object):
     #         print('User "{0}" already configured.'.format(demo_user_name))
     #         print('Done.')
 
-    # def data_administrator_user_setup(
-    #     self, data_admin_user_name, data_admin_user_email, CompanyName,
-    #     data_admin_user, data_admin_user_pw, DataAdministrator_image
-    # ):
+    def data_administrator_user_setup(
+        self, data_admin_user_name, data_admin_user_email, CompanyName,
+        data_admin_user, data_admin_user_pw, DataAdministrator_image
+    ):
 
-    #     print('Configuring user "Data Administrator"...')
+        print('Configuring user "Data Administrator"...')
 
-    #     client = erppeek.Client(
-    #         server=self.server,
-    #         db=self.dbname,
-    #         user='admin',
-    #         password=self.admin_user_pw)
+        client = erppeek.Client(
+            server=self.server,
+            db=self.dbname,
+            user='admin',
+            password=self.admin_user_pw)
 
-    #     ResUsers = client.model('res.users')
-    #     args = [('name', '=', data_admin_user_name), ]
-    #     user = ResUsers.browse(args)
+        ResUsers = client.model('res.users')
+        args = [('name', '=', data_admin_user_name), ]
+        user = ResUsers.browse(args)
 
-    #     if user.id == []:
+        if user.id == []:
 
-    #         ResPartner = client.model('res.partner')
-    #         args = [('name', '=', CompanyName), ]
-    #         parent_id = ResPartner.browse(args).id
+            ResPartner = client.model('res.partner')
+            args = [('name', '=', CompanyName), ]
+            parent_id = ResPartner.browse(args).id
 
-    #         ResCompany = client.model('res.company')
-    #         args = [('name', '=', CompanyName), ]
-    #         company_id = ResCompany.browse(args).id
+            ResCompany = client.model('res.company')
+            args = [('name', '=', CompanyName), ]
+            company_id = ResCompany.browse(args).id
 
-    #         values = {
-    #             'name': data_admin_user_name,
-    #             # 'customer': False,
-    #             'employee': False,
-    #             'is_company': False,
-    #             'email': data_admin_user_email,
-    #             'website': '',
-    #             'parent_id': parent_id[0],
-    #             'company_id': company_id[0],
-    #             'tz': self.tz,
-    #             'lang': self.lang
-    #         }
-    #         partner_id = ResPartner.create(values)
+            values = {
+                'name': data_admin_user_name,
+                # 'customer': False,
+                'employee': False,
+                'is_company': False,
+                'email': data_admin_user_email,
+                'website': '',
+                'parent_id': parent_id[0],
+                'company_id': company_id[0],
+                'tz': self.tz,
+                'lang': self.lang
+            }
+            partner_id = ResPartner.create(values)
 
-    #         values = {
-    #             'name': data_admin_user_name,
-    #             'partner_id': partner_id,
-    #             'company_id': company_id[0],
-    #             'login': data_admin_user,
-    #             'password': data_admin_user_pw,
-    #             'image_1920': DataAdministrator_image,
-    #         }
-    #         ResUsers.create(values)
+            values = {
+                'name': data_admin_user_name,
+                'partner_id': partner_id,
+                'company_id': company_id[0],
+                'login': data_admin_user,
+                'password': data_admin_user_pw,
+                'image_1920': DataAdministrator_image,
+            }
+            ResUsers.create(values)
 
-    #         print('Done.')
+            print('Done.')
 
-    #     else:
+        else:
 
-    #         print('User "{0}" already configured.'.format(data_admin_user_name))
-    #         print('Done.')
+            print('User "{0}" already configured.'.format(data_admin_user_name))
+            # print('Done.')
 
     def user_groups_setup(self, user_name, group_name_list):
 
