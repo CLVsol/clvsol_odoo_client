@@ -105,8 +105,45 @@ class DB(object):
 
         else:
 
-            print('"{0}" already configured.'.format(self.dbname))
-            print('Done.')
+            # print('"{0}" already configured.'.format(self.dbname))
+            print('"{0}" already configured.'.format(CompanyName))
+            # print('Done.')
+
+    # def administrator_setup(self, admin_user_email, Administrator_image):
+
+    #     print('Configuring user "Administrator"...')
+
+    #     client = erppeek.Client(
+    #         server=self.server,
+    #         db=self.dbname,
+    #         user='admin',
+    #         password=self.admin_user_pw)
+
+    #     ResUsers = client.model('res.users')
+    #     args = [('name', '=', 'Administrator'), ]
+    #     user = ResUsers.browse(args)
+
+    #     if user[0].email != admin_user_email:
+
+    #         values = {
+    #             'lang': self.lang,
+    #             'tz': self.tz,
+    #             'email': admin_user_email,
+    #             'image_1920': Administrator_image,
+    #         }
+    #         ResUsers.write(user.id, values)
+
+    #         group_name_list = [
+    #             'Contact Creation',
+    #         ]
+    #         self.user_groups_setup('Administrator', group_name_list)
+
+    #         print('Done.')
+
+    #     else:
+
+    #         print('User "{0}" already configured.'.format(user.name))
+    #         print('Done.')
 
     def administrator_setup(self, admin_user_email, Administrator_image):
 
@@ -119,10 +156,10 @@ class DB(object):
             password=self.admin_user_pw)
 
         ResUsers = client.model('res.users')
-        args = [('name', '=', 'Administrator'), ]
-        user = ResUsers.browse(args)
+        args = [('name', '=', 'Administrator'), ('email', '!=', admin_user_email), ]
+        user_id = ResUsers.browse(args).id
 
-        if user[0].email != admin_user_email:
+        if user_id != []:
 
             values = {
                 'lang': self.lang,
@@ -130,7 +167,7 @@ class DB(object):
                 'email': admin_user_email,
                 'image_1920': Administrator_image,
             }
-            ResUsers.write(user.id, values)
+            ResUsers.write(user_id, values)
 
             group_name_list = [
                 'Contact Creation',
@@ -141,63 +178,63 @@ class DB(object):
 
         else:
 
-            print('User "{0}" already configured.'.format(user.name))
-            print('Done.')
+            print('User "{0}" already configured.'.format('Administrator'))
+            # print('Done.')
 
-    def demo_user_setup(self, demo_user_name, demo_user_email, CompanyName, demo_user, demo_user_pw, Demo_User_image):
+    # def demo_user_setup(self, demo_user_name, demo_user_email, CompanyName, demo_user, demo_user_pw, Demo_User_image):
 
-        print('Configuring user "Demo"...')
+    #     print('Configuring user "Demo"...')
 
-        client = erppeek.Client(
-            server=self.server,
-            db=self.dbname,
-            user='admin',
-            password=self.admin_user_pw)
+    #     client = erppeek.Client(
+    #         server=self.server,
+    #         db=self.dbname,
+    #         user='admin',
+    #         password=self.admin_user_pw)
 
-        ResUsers = client.model('res.users')
-        args = [('name', '=', demo_user_name), ]
-        user = ResUsers.browse(args)
+    #     ResUsers = client.model('res.users')
+    #     args = [('name', '=', demo_user_name), ]
+    #     user = ResUsers.browse(args)
 
-        if user.id == []:
+    #     if user.id == []:
 
-            ResPartner = client.model('res.partner')
-            args = [('name', '=', CompanyName), ]
-            parent_id = ResPartner.browse(args).id
+    #         ResPartner = client.model('res.partner')
+    #         args = [('name', '=', CompanyName), ]
+    #         parent_id = ResPartner.browse(args).id
 
-            ResCompany = client.model('res.company')
-            args = [('name', '=', CompanyName), ]
-            company_id = ResCompany.browse(args).id
+    #         ResCompany = client.model('res.company')
+    #         args = [('name', '=', CompanyName), ]
+    #         company_id = ResCompany.browse(args).id
 
-            values = {
-                'name': demo_user_name,
-                # 'customer': False,
-                'employee': False,
-                'is_company': False,
-                'email': demo_user_email,
-                'website': '',
-                'parent_id': parent_id[0],
-                'company_id': company_id[0],
-                'tz': self.tz,
-                'lang': self.lang
-            }
-            partner_id = ResPartner.create(values)
+    #         values = {
+    #             'name': demo_user_name,
+    #             # 'customer': False,
+    #             'employee': False,
+    #             'is_company': False,
+    #             'email': demo_user_email,
+    #             'website': '',
+    #             'parent_id': parent_id[0],
+    #             'company_id': company_id[0],
+    #             'tz': self.tz,
+    #             'lang': self.lang
+    #         }
+    #         partner_id = ResPartner.create(values)
 
-            values = {
-                'name': demo_user_name,
-                'partner_id': partner_id,
-                'company_id': company_id[0],
-                'login': demo_user,
-                'password': demo_user_pw,
-                'image_1920': Demo_User_image,
-            }
-            ResUsers.create(values)
+    #         values = {
+    #             'name': demo_user_name,
+    #             'partner_id': partner_id,
+    #             'company_id': company_id[0],
+    #             'login': demo_user,
+    #             'password': demo_user_pw,
+    #             'image_1920': Demo_User_image,
+    #         }
+    #         ResUsers.create(values)
 
-            print('Done.')
+    #         print('Done.')
 
-        else:
+    #     else:
 
-            print('User "{0}" already configured.'.format(demo_user_name))
-            print('Done.')
+    #         print('User "{0}" already configured.'.format(demo_user_name))
+    #         print('Done.')
 
     def data_administrator_user_setup(
         self, data_admin_user_name, data_admin_user_email, CompanyName,
@@ -255,7 +292,7 @@ class DB(object):
         else:
 
             print('User "{0}" already configured.'.format(data_admin_user_name))
-            print('Done.')
+            # print('Done.')
 
     def user_groups_setup(self, user_name, group_name_list):
 
@@ -282,7 +319,8 @@ class DB(object):
                 }
                 ResUsers.write(user_id, values)
 
-        print('Done.')
+        # print('Done.')
+        print('Done (user_groups_setup).')
 
     def module_install_upgrade(self, module_name, upgrade=False):
 
