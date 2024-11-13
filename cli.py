@@ -30,7 +30,8 @@ class CLI(object):
         upgrade_all=False,
         modules_to_upgrade=[],
         lang='pt_BR',
-        tz='America/Sao_Paulo'
+        tz='America/Sao_Paulo',
+        country='Brazil'
 
     ):
 
@@ -49,6 +50,7 @@ class CLI(object):
         self.modules_to_upgrade = modules_to_upgrade
         self.lang = lang
         self.tz = tz
+        self.country = country
 
     def argparse_db_setup(self):
 
@@ -63,6 +65,7 @@ class CLI(object):
         parser.add_argument('-m', '--modules', nargs='+', help='Modules to upgrade', required=False)
         parser.add_argument('--lang', action="store", dest="lang")
         parser.add_argument('--tz', action="store", dest="tz")
+        parser.add_argument('--country', action="store", dest="country")
 
         args = parser.parse_args()
         # print('%s%s' % ('--> ', args))
@@ -104,6 +107,9 @@ class CLI(object):
 
         if args.tz is not None:
             self.tz = args.tz
+
+        if args.country is not None:
+            self.country = args.country
 
     def argparse_template(self):
 
