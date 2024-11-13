@@ -19,7 +19,8 @@ class DB(object):
         upgrade_all=False,
         modules_to_upgrade=[],
         lang='pt_BR',
-        tz='America/Sao_Paulo'
+        tz='America/Sao_Paulo',
+        country='Brazil'
     ):
 
         self.server = server
@@ -32,6 +33,7 @@ class DB(object):
         self.modules_to_upgrade = modules_to_upgrade
         self.lang = lang
         self.tz = tz
+        self.country = country
 
     def create(self):
 
@@ -73,6 +75,10 @@ class DB(object):
             user='admin',
             password=self.admin_user_pw)
 
+        ResCountry = client.model('res.country')
+        args = [('name', '=', self.country), ]
+        country_id = ResCountry.browse(args).id[0]
+
         ResPartner = client.model('res.partner')
         args = [('name', '=', 'My Company'), ]
         partner_id = ResPartner.browse(args).id
@@ -86,6 +92,7 @@ class DB(object):
                 'tz': self.tz,
                 'lang': self.lang,
                 'image_1920': Company_image,
+                'country_id': country_id,
             }
             ResPartner.write(partner_id, values)
 
